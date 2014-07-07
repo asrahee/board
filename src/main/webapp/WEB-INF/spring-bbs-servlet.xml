@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+		http://mybatis.org/schema/mybatis-spring 
+        http://mybatis.org/schema/mybatis-spring.xsd">
+	
+	<!-- 스프링의 DispatcherServet에게 정적인 자원을 알려준다.  -->
+    <mvc:resources location="/images/" mapping="/images/**" />
+    <mvc:resources location="/css/" mapping="/css/**" />
+    
+	<!-- HandlerMapping -->
+	<!-- 
+		1. SimpleUrlHandlerMapping 을 사용함 
+		 	mapping 프로퍼티명을 아래 선언된 listController bean에 매핑시켜준다 
+		 	
+			<bean id="handlerMapping"
+			    class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+			    <property name="mappings">
+			        <value>
+			            /bbs/list=listController
+			        </value>
+			    </property>
+			</bean>
+			
+			SimpleUrlHandlerMapping 은 디폴트 매핑보다는 편하지만 요청마다 컨트롤러가 하나씩 있어야 한다.
+			프로젝트가 규모가 커질수록 이런 모양은 좋아 보이지 않는다.
+			이상적인 것은 유즈 케이스별로 컨트롤러를 하나씩 있는 것이다.
+	 -->
+	 
+	<!-- 
+		2. <context:component-scan base-package="net.java_school.board.spring" /> 설정은 
+			어노테이션이 적용된 컴포넌트를 찾아 자동으로 등록한다.(여기서 컴포넌트란 dao, service, 컨트롤러를 의미한다.)
+			이 설정으로 구체적인 핸들러 매핑 클래스에 대한 설정,즉 spring-bbs-servlet.xml 에서 컨트롤러에 대한 설정이 없어도 되는 것이다.
+	 -->
+<!-- 	<mybatis:scan base-package="net.spring.example.mybatis" /> -->
+	<!-- <mvc:annotation-driven /> 설정은 스프링 MVC 에서 필요한 어노테이션 기반의 모든 기능을 사용할 수 있도록 한다. -->
+	<mvc:annotation-driven/>
+	<!-- <context:component-scan 은 <mvc:annotation-driven /> 과 함께 쓰지 않으면 작동하지 않는다. -->
+	<context:component-scan
+        base-package="net.spring.example.commons,
+        	net.spring.example.mybatis,
+        	net.spring.example.board.controller,
+        	net.spring.example.board.service,
+        	net.spring.example.board.serviceimpl,
+        	net.spring.example.board.vo,
+        	net.spring.example.user.controller,
+        	net.spring.example.user.service,
+        	net.spring.example.user.serviceimpl,
+        	net.spring.example.user.vo"/>
+	
+	<!-- listController bean 프로퍼티 설정 -->
+	<!-- p:  는 프로퍼티 설정하는 부분 -->
+	<!-- p:boardService-ref 프로퍼티중 서비스 DI 설정, 아래 설정된 BoardService를 이용한다 -->
+<!-- 	<bean id="listController" name="/bbs/list" -->
+<!-- 		class="net.spring.example.controller.BbsController" -->
+<!-- 			p:boardService-ref="boardService" /> -->
+			
+			
+	<!-- ViewResolver -->
+	<!-- MVC 모델중 C (Controller)에 의해서 ModelAndView 객체로 Return 되어지는 View 이름을 연결하는 역할을 한다.
+		꼭, ModelAndView 객체가 아니어도 Return 되어지는 View 이름을 연결  -->
+	<!-- 
+		1. BeanNameViewResolver
+			Context에 정의된 Bean ID를 찾아서 연결한다.
+			Ex) new ModelAndView("BeanID");
+		2. ResourceBundleViewResolver
+			Properties 파일에 정의된 View Name을 찾아서 연결한다.
+			Ex) new ModelAndView("ViewName");
+		3. XmlViewResolver
+			XML 파일에 정의된 BeanName을 찾아서 연결한다.
+			Ex) new ModelAndView("BeanName");
+		4. InternalResourceViewResolver
+			Default ViewResolver로 jsp, html 파일을 직접 반환한다.
+			prefix, subfix를 이용하여 페이지 파일을 완성한다.	
+	 -->
+	<bean id="internalResourceViewResolver"
+	    class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	    <property name="viewClass">
+	        <value>org.springframework.web.servlet.view.JstlView</value>
+	    </property>
+	    <property name="prefix">
+	        <value>/WEB-INF/jsp/</value>
+	    </property>
+	    <property name="suffix">
+	        <value>.jsp</value>
+	    </property>
+	</bean>
+	
+	<!-- Oracle 용 설정 -->
+<!-- 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> -->
+<!-- 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/> -->
+<!-- 		<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:ORCL"/> -->
+<!-- 		<property name="username" value="scott"/> -->
+<!-- 		<property name="password" value="1111"/> -->
+<!-- 		<property name="maxActive" value="100"/> -->
+<!-- 		<property name="maxWait" value="1000"/> -->
+<!-- 		<property name="poolPreparedStatements" value="true"/> -->
+<!-- 		<property name="defaultAutoCommit" value="true"/> -->
+<!-- 		<property name="validationQuery" value=" SELECT 1 FROM DUAL" /> -->
+<!-- 	</bean> -->
+
+	<!-- Maria DB 용 설정(MySQL) -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+<!-- 	<bean id="dataSource" class="org.apache.ibatis.datasource.pooled.PooledDataSource"> -->
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://localhost:3306/bbs"/>
+		<property name="username" value="scott"/>
+		<property name="password" value="1111"/>
+	</bean>
+	
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:net/spring/example/mybatis/Configuration.xml" />
+	</bean>
+	
+	<!-- 
+		BoardService 에서 사용하는 매퍼 설정
+		매퍼 인터페이스 :  net.spring.example.mybatis.BoardMapper
+		세션 팩토리 : 위에 정의된 sqlSessionFactory(Configuration.xml) 사용
+		
+		BoardMapper 인터페이스와 1:1 로 대응되는 DB 쿼리를 위의 configLocation 에 정의된 .xml 파일 내용으로 설정
+		
+		여기서는 BoardMapper.java 인터페이스와 BoardMapper.xml 를 1:1로 매핑하고 있음
+	-->
+	<bean id="boardMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="net.spring.example.mybatis.BoardMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<!-- BoardService -->
+	<bean id="boardService" class="net.spring.example.board.serviceimpl.BoardServiceImpl">
+		<property name="boardMapper" ref="boardMapper"/>
+	</bean>
+	
+	<bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="net.spring.example.mybatis.UserMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+	<!-- UserService -->
+	<bean id="userService" class="net.spring.example.user.serviceimpl.UserServiceImpl">
+		<property name="userMapper" ref="userMapper"/>
+	</bean>
+	
+	<!-- 
+	파일 업로드를 위한 기본 설정
+		Spring MVC는 파일 업로드 기능을 지원하기 위하여 Commons 파일 업로드(http://jakarta.apache.org/commons/fileupload)와 
+		COS 파일 업로드(http://www.servlets.com/cos) 라이브러리를 지원하고 있다.
+		
+		multipartResolver 와 uploadDirResource 빈을 정의한다. 이 두 빈을 사용하기 위해서 pom.xml 파일에 추가로 dependency를 
+		설정하여야 한다(commons-fileupload, commons-io).
+		
+	참고 URL : 	http://lilymate.tistory.com/entry/Spring-MVC-%ED%8C%8C%EC%9D%BC-%EC%97%85%EB%A1%9C%EB%93%9C 
+				http://dhruba.name/2008/12/27/implementing-single-and-multiple-file-multipart-uploads-using-spring-25/
+	 -->
+	 
+	<!-- 파일 업로드를 위한 Resolver 정의 -->
+	<!-- 만약 COS 파일 업로드 라이브러리를 이용하고자 한다면
+		 "org.springframework.web.multipart.cos.CosMultipartResolver"를 이용하면 된다. -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize">
+			<value>10000000</value>
+		</property>
+		<property name="uploadTempDir" ref="uploadDirResource"/>
+	</bean>
+	
+	<!-- 파일 업로드시 사용할 임시 파일 저장 위치 -->
+	<bean id="uploadDirResource" class="org.springframework.core.io.FileSystemResource">
+		<constructor-arg>
+			<value>D:/temp</value>
+		</constructor-arg>
+	</bean>
+</beans>
+		
+		

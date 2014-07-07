@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration 
+	PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<!-- Mybatis 설정 파일 typeAliase 와 sprin-bbs-servlet.xml 에 정의된 매퍼 xml 파일을 정의한다 -->
+<configuration>
+	<typeAliases>
+		<typeAlias type="net.spring.example.board.vo.AttachFile" alias="AttachFile"/>
+		<typeAlias type="net.spring.example.board.vo.Comment" alias="Comment"/>
+		<typeAlias type="net.spring.example.board.vo.Board" alias="Board"/>
+		<typeAlias type="net.spring.example.board.vo.Article" alias="Article"/>
+		<typeAlias type="net.spring.example.user.vo.User" alias="User"/>
+	</typeAliases>
+	
+	<mappers>
+		<mapper resource="net/spring/example/mybatis/BoardMapper.xml"/>
+		<mapper resource="net/spring/example/mybatis/UserMapper.xml"/>
+	</mappers>
+</configuration>	
