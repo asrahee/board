@@ -24,7 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
  
 @Controller
-// /bbs 를 포함하는 모든 요청을 담당
+// bbs 를 포함하는 모든 요청을 담당
+// [[ 2014.07.07 TODO 소스 주석 추가 
 @RequestMapping("/bbs")
 public class BbsController {
     // @Autowired 를 종속변수에 적용하면 setter가 없어도 종속객체가 주입
