@@ -25,11 +25,12 @@ public class BoardServiceImpl implements BoardService {
 	/*
 	 * 게시판 목록
 	 */
-	public ArrayList<Article> getArticleList(String boardCd, String searchWord, int start, int end) {
+	public ArrayList<Article> getArticleList(String boardCd, String searchType, String searchWord, int start, int end) {
 		Integer startRownum = start;
 		Integer endRownum = end;
 		HashMap<String, String> hashmap = new HashMap<String, String>();
 		hashmap.put("boardCd", boardCd);
+		hashmap.put("searchType", searchType);
 		hashmap.put("searchWord", searchWord);
 		hashmap.put("start", startRownum.toString());
 		hashmap.put("end", endRownum.toString());
@@ -40,9 +41,10 @@ public class BoardServiceImpl implements BoardService {
 	/*
 	 * 특정 게시판의 총 게시물 갯수 구하기
 	 */
-	public int getTotalRecord(String boardCd, String searchWord) {
+	public int getTotalRecord(String boardCd, String searchType, String searchWord) {
 		HashMap<String,String> hashmap = new HashMap<String,String>();
 		hashmap.put("boardCd", boardCd);
+		hashmap.put("searchType", searchType);
 		hashmap.put("searchWord", searchWord);
 		return boardMapper.getTotalRecord(hashmap);
 	}

@@ -25,7 +25,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  
 @Controller
 // bbs 를 포함하는 모든 요청을 담당
-// [[ 2014.07.07 TODO 소스 주석 추가 
 @RequestMapping("/bbs")
 public class BbsController {
     // @Autowired 를 종속변수에 적용하면 setter가 없어도 종속객체가 주입
@@ -38,20 +37,22 @@ public class BbsController {
             String boardCd, 
             Integer curPage, 
             String searchWord, 
+            String searchType,
             Model model) throws Exception {
              
     	// 초기값 설정
         if (boardCd == null) boardCd = "free";
         if (curPage == null) curPage = 1;
         if (searchWord == null) searchWord = "";
- 
+        if (searchType == null) searchType = "title";
+        
         // 한 페이지당 보여줄 게시물 건수
         int numPerPage = 10;
         // 한 블럭당 보여줄 페이지 수
         int pagePerBlock = 10;
          
         // 전체 게시물 건수 조회
-        int totalRecord = boardService.getTotalRecord(boardCd, searchWord);
+        int totalRecord = boardService.getTotalRecord(boardCd, searchType, searchWord);
          
         PagingHelper pagingHelper = new PagingHelper(totalRecord, curPage, numPerPage, pagePerBlock);
          
@@ -59,7 +60,7 @@ public class BbsController {
         int start = pagingHelper.getStartRecord();
         int end = pagingHelper.getEndRecord();
  
-        ArrayList<Article> list = boardService.getArticleList(boardCd, searchWord, start, end);
+        ArrayList<Article> list = boardService.getArticleList(boardCd, searchType, searchWord, start, end);
         String boardNm = boardService.getBoardNm(boardCd);
         Integer no = boardService.getListNo();
         Integer prevLink = boardService.getPrevLink();
@@ -76,9 +77,13 @@ public class BbsController {
         model.addAttribute("firstPage", firstPage);
         model.addAttribute("lastPage", lastPage);
         model.addAttribute("pageLinks", pageLinks);
-        model.addAttribute("curPage", curPage);//curPage는 null 값이면 1로 만들어야 하므로
-        model.addAttribute("boardCd", boardCd);//boardCd는 null 값이면 free로 만들어야 하므로
-         
+        model.addAttribute("curPage", curPage);			//curPage는 null 값이면 1로 만들어야 하므로
+        model.addAttribute("boardCd", boardCd);			//boardCd는 null 값이면 free로 만들어야 하므로
+        // TODO 2014.07.08 [[ 검색 조건(searchType) 유지를 위한 설정
+        model.addAttribute("searchWord", searchWord);
+        model.addAttribute("searchType", searchType);
+        // 2014.07.08 검색 조건(searchType) 유지를 위한 설정 ]]
+        
         return "bbs/list";
     }
     
@@ -199,6 +204,7 @@ public class BbsController {
     		Integer articleNo,
     		String boardCd,
     		Integer curPage,
+    		String searchType,
     		String searchWord,
     		Model model) throws Exception{
     	if(searchWord == null){
@@ -219,14 +225,14 @@ public class BbsController {
     	Article prevArticle = boardService.getPrevArticle(articleNo, boardCd, searchWord);
     	
     	// 목록 보기
-    	int totalRecord = boardService.getTotalRecord(boardCd, searchWord);
+    	int totalRecord = boardService.getTotalRecord(boardCd, searchType, searchWord);
     	PagingHelper pagingHelper = new PagingHelper(totalRecord, curPage, numPerPage, pagePerBlock);
     	
     	boardService.setPagingHelper(pagingHelper);
     	int start = pagingHelper.getStartRecord();
     	int end = pagingHelper.getEndRecord();
     	
-    	ArrayList<Article> list = boardService.getArticleList(boardCd, searchWord, start, end);
+    	ArrayList<Article> list = boardService.getArticleList(boardCd, searchType, searchWord, start, end);
     	String boardNm = boardService.getBoardNm(boardCd);
     	Integer no = boardService.getListNo();
     	Integer prevLink = boardService.getPrevLink();

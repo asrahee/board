@@ -16,12 +16,12 @@ public interface BoardService {
 	/*
 	 * 게시판 목록
 	 */
-	public ArrayList<Article> getArticleList(String boardCd, String searchWord, int start, int end);
+	public ArrayList<Article> getArticleList(String boardCd, String searchType, String searchWord, int start, int end);
 	
 	/*
 	 * 특정 게시판의 총 게시물 갯수 구하기
 	 */
-	public int getTotalRecord(String boardCd, String searchWord);
+	public int getTotalRecord(String boardCd, String searchType, String searchWord);
 
 	/*
 	 * 새로운 게시글  추가

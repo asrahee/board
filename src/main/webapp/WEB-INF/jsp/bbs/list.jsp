@@ -38,7 +38,7 @@
 </script>
 </head>   
 
-<body>
+<body onload="load()">
 	<div id="wrap">
 		<div id="header">
 			<%@ include file="../inc/header.jsp" %>
@@ -110,7 +110,27 @@
 					<form id="searchForm" action="./list" method="get" style="margin: 0; padding: 0;">
 						<p style="margin: 0; padding: 0;">
 							<input type="hidden" name="boardCd" value="${boardCd }"/>
-							<input type="text" name="searchWord" size="15" maxlength="30"/>
+								<select id="searchType" name="searchType">
+									<c:if test="${searchType eq 'title'}">
+										<option value="title" selected="selected">제목</option>
+									</c:if>
+									<c:if test="${searchType != 'title'}">
+										<option value="title">제목</option>
+									</c:if>
+									<c:if test="${searchType eq 'titleContent'}">
+										<option value="titleContent" selected="selected">제목+내용</option>
+									</c:if>
+									<c:if test="${searchType != 'titleContent'}">
+										<option value="titleContent">제목+내용</option>
+									</c:if>
+									<c:if test="${searchType eq 'writer'}">
+										<option value="writer" selected="selected">작성자</option>
+									</c:if>
+									<c:if test="${searchType != 'writer'}">
+										<option value="writer">작성자</option>
+									</c:if>
+								</select>
+							<input type="text" name="searchWord" size="15" maxlength="30" value="${searchWord}"/>
 							<input type="submit" value="검색" style="height: 25px; line-height: 25px;"/>
 						</p>
 					</form>
