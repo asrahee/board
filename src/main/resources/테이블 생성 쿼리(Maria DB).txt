@@ -30,30 +30,30 @@ create table article (
 
 
 -- 게시글 번호 생성기 
-sequence 테이블 생성
-CREATE TABLE sequence (SEQ_ARTICLE_NO BIGINT NOT NULL) ENGINE=MyISAM;
+-- sequence 테이블 생성
+-- CREATE TABLE sequence (SEQ_ARTICLE_NO BIGINT NOT NULL) ENGINE=MyISAM;
 
-빈 값 추가
-INSERT INTO sequence VALUES (0);
+-- 빈 값 추가
+-- INSERT INTO sequence VALUES (0);
 
-Next sequence id 생성
-UPDATE sequence SET SEQ_ARTICLE_NO=LAST_INSERT_ID(SEQ_ARTICLE_NO+1);
+-- Next sequence id 생성
+-- UPDATE sequence SET SEQ_ARTICLE_NO=LAST_INSERT_ID(SEQ_ARTICLE_NO+1);
 
-생성된 Id 가져오기
-SELECT LAST_INSERT_ID();
+-- 생성된 Id 가져오기
+-- SELECT LAST_INSERT_ID();
 
 
 -- 게시글 번호 생성기 
-또는 테이블 생성시 AUTO_INCREMENT만 추가해 주면 자동증가가 설정됨
-이 방법을 사용함
-예제)
-CREATE TABLE TESTTABLE (
- IDX INT(11) AUTO_INCREMENT,
- INDEX2 INT(11) NOT NULL,
- PRIMARY KEY (IDX)
-);
+-- 또는 테이블 생성시 AUTO_INCREMENT만 추가해 주면 자동증가가 설정됨
+-- 이 방법을 사용함
+-- 예제)
+-- CREATE TABLE TESTTABLE (
+ -- IDX INT(11) AUTO_INCREMENT,
+ -- INDEX2 INT(11) NOT NULL,
+ -- PRIMARY KEY (IDX)
+-- );
 
-INSERT INTO TESTTABLE ( INDEX2 ) VALUES ( 100 );
+-- INSERT INTO TESTTABLE ( INDEX2 ) VALUES ( 100 );
 
 
 -- 덧글
