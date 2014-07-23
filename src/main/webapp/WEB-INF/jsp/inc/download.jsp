@@ -48,6 +48,11 @@
 				fis.close();
 			} catch (IOException e) {}
 		}
+		if(outputStream != null){
+			try{
+				outputStream.close();
+			} catch (IOException e) {}
+		}
 	}
 	
 	out.flush();

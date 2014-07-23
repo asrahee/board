@@ -1,10 +1,7 @@
 package net.spring.example.board.controller;
 
-import java.io.File;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,27 +9,25 @@ import net.spring.example.board.service.BoardService;
 import net.spring.example.board.vo.Article;
 import net.spring.example.board.vo.AttachFile;
 import net.spring.example.board.vo.Comment;
+import net.spring.example.commons.FileUploadUtil;
 import net.spring.example.commons.PagingHelper;
-import net.spring.example.commons.WebConstants;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
  
 @Controller
 // bbs 를 포함하는 모든 요청을 담당
-@RequestMapping("/bbs")
 public class BbsController {
     // @Autowired 를 종속변수에 적용하면 setter가 없어도 종속객체가 주입
     @Autowired
     private BoardService boardService;
      
     // 이 메소드는 GET 방식과 POST 방식의 /bbs/list 요청때 호출
-    @RequestMapping(value="/list", method={RequestMethod.GET, RequestMethod.POST})
+    // 별도의 method 를 정의하지 않은 경우 GET/POST 방식 양쪽의 모든 HTTP 전송방식을 처리함
+    @RequestMapping(value="/bbs/list")
     public String list(
             String boardCd, 
             Integer curPage, 
@@ -79,7 +74,7 @@ public class BbsController {
         model.addAttribute("pageLinks", pageLinks);
         model.addAttribute("curPage", curPage);			//curPage는 null 값이면 1로 만들어야 하므로
         model.addAttribute("boardCd", boardCd);			//boardCd는 null 값이면 free로 만들어야 하므로
-        // TODO 2014.07.08 [[ 검색 조건(searchType) 유지를 위한 설정
+        // TODO 2014.07.08 [[ 검색 조건(searchType) 유지를 위한 설정(완료)
         model.addAttribute("searchWord", searchWord);
         model.addAttribute("searchType", searchType);
         // 2014.07.08 검색 조건(searchType) 유지를 위한 설정 ]]
@@ -88,7 +83,7 @@ public class BbsController {
     }
     
     // 글쓰기(입력폼으로 전환됨)
-    @RequestMapping(value="/write", method=RequestMethod.GET)
+    @RequestMapping(value="/bbs/write", method=RequestMethod.GET)
     public String write(String boardCd, Model model) throws Exception {
     	// 게시판 이름
     	String boardNm = boardService.getBoardNm(boardCd);
@@ -98,7 +93,7 @@ public class BbsController {
     }
     
     // 글쓰기(새 글을 추가하고 리스트 화면으로 이동)
-    @RequestMapping(value="/write", method=RequestMethod.POST)
+    @RequestMapping(value="/bbs/write")
     public String write(Article article){
     	// TODO 회원모듈 구현 전으로 임시 이메일을 설정
     	article.setEmail("yjson@esumtech.com");
@@ -108,7 +103,7 @@ public class BbsController {
     }
     
     // 글 수정
-    @RequestMapping(value="/modify", method=RequestMethod.GET)
+    @RequestMapping(value="/bbs/modify", method=RequestMethod.GET)
     public String modify(
     		Integer articleNo,
     		String boardCd,
@@ -123,67 +118,79 @@ public class BbsController {
     	return "bbs/modifyform";
     }
     
-    // 글 수정(내용을 수정하고 리스트 화면으로 이동)
-    @RequestMapping(value="/modify", method=RequestMethod.POST)
+    /**
+     * 글 수정(내용을 수정하고 상세보기 화면으로 이동), cos.jar 사용하는 경우로 FileUploadUtil 을 사용하게 된다.
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value="/bbs/modify")
     public String modify(HttpServletRequest request) throws Exception {
-    	
-    	// MultipartHttpServletRequest 사용을 위해서는 HttpServletRequest 로 인자를 받고
-    	// HttpServletRequest 객체를 casting 하여 사용하여야 한다. 
-    	MultipartHttpServletRequest mpRequest = (MultipartHttpServletRequest) request;
-    	
-    	int articleNo = Integer.parseInt(mpRequest.getParameter("articleNo"));
-    	String boardCd = mpRequest.getParameter("boardCd");
-    	int curPage = Integer.parseInt(mpRequest.getParameter("curPage"));
-    	String searchWord = mpRequest.getParameter("searchWord");
-    	
-    	String title = mpRequest.getParameter("title");
-    	String content = mpRequest.getParameter("content");
-    	
-    	// 게시글 수정
-    	Article article = new Article();
-    	article.setEmail("yjson@esumtech.com");		// 임시 설정
-    	article.setTitle(title);
-    	article.setContent(content);
-    	article.setBoardCd(boardCd);
-    	article.setArticleNo(articleNo);
-    	boardService.update(article);
-    	
-    	// 파일 업로드
-    	Iterator<String> it = mpRequest.getFileNames();
-    	List<MultipartFile> fileList = new ArrayList<MultipartFile>();
-    	while(it.hasNext()) {
-    		MultipartFile multiFile = mpRequest.getFile((String)it.next());
-    		
-    		if(multiFile.getSize() > 0){
-    			String filename = multiFile.getOriginalFilename();
-    			multiFile.transferTo(new File(WebConstants.BASE_PATH + filename));
-    			fileList.add(multiFile);
-    		}
-    	}
-    	
-    	// 파일 데이터 삽입
-    	int size = fileList.size();
-    	for(int i = 0 ; i < size ; i++){
-    		MultipartFile mpFile = fileList.get(i);
-    		AttachFile attachFile = new AttachFile();
-    		String filename = mpFile.getOriginalFilename();
-    		attachFile.setFilename(filename);
-    		attachFile.setFiletype(mpFile.getContentType());
-    		attachFile.setFilesize(mpFile.getSize());
-    		attachFile.setArticleNo(articleNo);
-    		boardService.insertAttachFile(attachFile);
-    	}
-    	
-    	searchWord = URLEncoder.encode(searchWord, "UTF-8");
-    	return "redirect:/bbs/view?articleNo=" + articleNo
-    			+ "&boardCd=" + boardCd 
-    			+ "&curPage=" + curPage
-    			+ "&searchWord=" + searchWord;
-    	
+    	FileUploadUtil fuu = new FileUploadUtil(boardService);
+    	return fuu.fileUpload(request);
     }
     
+    // 글 수정(내용을 수정하고 상세보기 화면으로 이동), commons-fileupload, commons-io 를 사용하는 경우
+//    @RequestMapping(value="/bbs/modify", method=RequestMethod.POST)
+//    public String modify(HttpServletRequest request) throws Exception {
+//    	
+//    	// MultipartHttpServletRequest 사용을 위해서는 HttpServletRequest 로 인자를 받고
+//    	// HttpServletRequest 객체를 casting 하여 사용하여야 한다. 
+//    	MultipartHttpServletRequest mpRequest = (MultipartHttpServletRequest) request;
+//    	
+//    	int articleNo = Integer.parseInt(mpRequest.getParameter("articleNo"));
+//    	String boardCd = mpRequest.getParameter("boardCd");
+//    	int curPage = Integer.parseInt(mpRequest.getParameter("curPage"));
+//    	String searchWord = mpRequest.getParameter("searchWord");
+//    	
+//    	String title = mpRequest.getParameter("title");
+//    	String content = mpRequest.getParameter("content");
+//    	
+//    	// 게시글 수정
+//    	Article article = new Article();
+//    	article.setEmail("yjson@esumtech.com");		// 임시 설정
+//    	article.setTitle(title);
+//    	article.setContent(content);
+//    	article.setBoardCd(boardCd);
+//    	article.setArticleNo(articleNo);
+//    	boardService.update(article);
+//    	
+//    	// 파일 업로드
+//    	Iterator<String> it = mpRequest.getFileNames();
+//    	List<MultipartFile> fileList = new ArrayList<MultipartFile>();
+//    	while(it.hasNext()) {
+//    		MultipartFile multiFile = mpRequest.getFile((String)it.next());
+//    		
+//    		if(multiFile.getSize() > 0){
+//    			String filename = multiFile.getOriginalFilename();
+//    			multiFile.transferTo(new File(WebConstants.BASE_PATH + filename));
+//    			fileList.add(multiFile);
+//    		}
+//    	}
+//    	
+//    	// 파일 데이터 삽입
+//    	int size = fileList.size();
+//    	for(int i = 0 ; i < size ; i++){
+//    		MultipartFile mpFile = fileList.get(i);
+//    		AttachFile attachFile = new AttachFile();
+//    		String filename = mpFile.getOriginalFilename();
+//    		attachFile.setFilename(filename);
+//    		attachFile.setFiletype(mpFile.getContentType());
+//    		attachFile.setFilesize(mpFile.getSize());
+//    		attachFile.setArticleNo(articleNo);
+//    		boardService.insertAttachFile(attachFile);
+//    	}
+//    	
+//    	searchWord = URLEncoder.encode(searchWord, "UTF-8");
+//    	return "redirect:/bbs/view?articleNo=" + articleNo
+//    			+ "&boardCd=" + boardCd 
+//    			+ "&curPage=" + curPage
+//    			+ "&searchWord=" + searchWord;
+//    	
+//    }
+    
     // 글 삭제
-    @RequestMapping(value="/delete", method=RequestMethod.POST)
+    @RequestMapping(value="/bbs/delete")
     public String delete(
     		Integer articleNo,
     		String boardCd,
@@ -199,7 +206,7 @@ public class BbsController {
     }
     
     // 상세보기(리스트 특정 항목을 선택하여 상세 내용 보기
-    @RequestMapping(value="/view", method=RequestMethod.GET)
+    @RequestMapping(value="/bbs/view", method=RequestMethod.GET)
     public String view(
     		Integer articleNo,
     		String boardCd,
@@ -261,7 +268,7 @@ public class BbsController {
     }
     
     // 덧글쓰기
-    @RequestMapping(value="/commentAdd", method=RequestMethod.POST)
+    @RequestMapping(value="/bbs/commentAdd")
     public String commentAdd(
     		Integer articleNo,
     		String boardCd,
@@ -284,7 +291,7 @@ public class BbsController {
     }
     
    // 덧글수정
-    @RequestMapping(value="/commentUpdate", method=RequestMethod.POST)
+    @RequestMapping(value="/bbs/commentUpdate")
     public String commentUpdate(
     		Integer commentNo,
     		Integer articleNo,
@@ -305,7 +312,7 @@ public class BbsController {
     }
     
     // 덧글 삭제
-    @RequestMapping(value="/commentDel", method=RequestMethod.POST)
+    @RequestMapping(value="/bbs/commentDel")
     public String commentDel(Integer commentNo,
     		Integer articleNo,
     		String boardCd,
@@ -321,14 +328,14 @@ public class BbsController {
     }
     
     // 파일 다운로드
-    @RequestMapping(value="/download", method=RequestMethod.POST)
+    @RequestMapping(value="/bbs/download")
     public String download(String filename, Model model){
     	model.addAttribute("filename", filename);
     	return "inc/download";
     }
     
     // 첨부파일 삭제
-    @RequestMapping(value="/attachFileDel", method=RequestMethod.POST)
+    @RequestMapping(value="/bbs/attachFileDel")
     public String attachFileDel(
     		Integer attachFileNo,
     		Integer articleNo,

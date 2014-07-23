@@ -210,18 +210,26 @@ WEB-INF/lib 에 따로 설정할 필요가 없이 pom.xml 에 해당 의존관�
 	</dependency>
 
 	<!-- 파일 업로드를 위한 commons-fileupload dependency 추가 -->
-	<dependency>
-		<groupId>commons-fileupload</groupId>
-		<artifactId>commons-fileupload</artifactId>
-		<version>1.2.1</version><!-- make correct version here -->
-	</dependency>
+<!-- 	<dependency> -->
+<!-- 		<groupId>commons-fileupload</groupId> -->
+<!-- 		<artifactId>commons-fileupload</artifactId> -->
+<!-- 		<version>1.2.1</version> makesure correct version here -->
+<!-- 	</dependency> -->
 
 	<!-- 파일 업로드시 사용되는 추가 라이브러리 사용을 위해 추가 -->
+<!-- 	<dependency> -->
+<!-- 		<groupId>commons-io</groupId> -->
+<!-- 		<artifactId>commons-io</artifactId> -->
+<!-- 		<version>1.4</version> -->
+<!-- 	</dependency> -->
+	
+	<!-- cos.jar 를 사용한 파일 업로드를 위해 추가 -->
 	<dependency>
-		<groupId>commons-io</groupId>
-		<artifactId>commons-io</artifactId>
-		<version>1.4</version>
+		<groupId>com.servlets</groupId>
+		<artifactId>cos</artifactId>
+		<version>05Nov2002</version>
 	</dependency>
+	
 	
 	<!-- [[ json 사용을 위해 추가 -->
 	<dependency>

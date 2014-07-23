@@ -173,19 +173,19 @@
 	<!-- 파일 업로드를 위한 Resolver 정의 -->
 	<!-- 만약 COS 파일 업로드 라이브러리를 이용하고자 한다면
 		 "org.springframework.web.multipart.cos.CosMultipartResolver"를 이용하면 된다. -->
-	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<property name="maxUploadSize">
-			<value>10000000</value>
-		</property>
-		<property name="uploadTempDir" ref="uploadDirResource"/>
-	</bean>
+<!-- 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"> -->
+<!-- 		<property name="maxUploadSize"> -->
+<!-- 			<value>10000000</value> -->
+<!-- 		</property> -->
+<!-- 		<property name="uploadTempDir" ref="uploadDirResource"/> -->
+<!-- 	</bean> -->
 	
 	<!-- 파일 업로드시 사용할 임시 파일 저장 위치 -->
-	<bean id="uploadDirResource" class="org.springframework.core.io.FileSystemResource">
-		<constructor-arg>
-			<value>D:/temp</value>
-		</constructor-arg>
-	</bean>
+<!-- 	<bean id="uploadDirResource" class="org.springframework.core.io.FileSystemResource"> -->
+<!-- 		<constructor-arg> -->
+<!-- 			<value>D:/temp</value> -->
+<!-- 		</constructor-arg> -->
+<!-- 	</bean> -->
 </beans>
 		
 		

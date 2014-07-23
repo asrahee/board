@@ -36,16 +36,16 @@
 
 <div id="wrap">
 
-	<div id="header">
-		<%@ include file="../inc/header.jsp" %>
-	</div>
+<!-- 	<div id="header"> -->
+<%-- 		<%@ include file="../inc/header.jsp" %> --%>
+<!-- 	</div> -->
 
-	<div id="main-menu">
-		<%@ include file="../inc/main-menu.jsp" %>
-	</div>
+<!-- 	<div id="main-menu"> -->
+<%-- 		<%@ include file="../inc/main-menu.jsp" %> --%>
+<!-- 	</div> -->
 
 	<div id="container">
-		<div id="content" style="height: 800px;">
+		<div id="content" style="height: 800px; width: 800px; margin:0 auto; ">
 			<div id="url-navi">BBS</div>
 
 <!-- 본문 시작 -->
@@ -81,17 +81,17 @@
 		</div><!-- content 끝 -->
 	</div><!--  container 끝 -->
 	
-	<div id="sidebar">
-		<%@ include file="bbs-menu.jsp" %>
-	</div>
+<!-- 	<div id="sidebar"> -->
+<%-- 		<%@ include file="bbs-menu.jsp" %> --%>
+<!-- 	</div> -->
 	
-	<div id="extra">
-		<%@ include file="../inc/extra.jsp" %>
-	</div>
+<!-- 	<div id="extra"> -->
+<%-- 		<%@ include file="../inc/extra.jsp" %> --%>
+<!-- 	</div> -->
 
-	<div id="footer">
-		<%@ include file="../inc/footer.jsp" %>
-	</div>
+<!-- 	<div id="footer"> -->
+<%-- 		<%@ include file="../inc/footer.jsp" %> --%>
+<!-- 	</div> -->
 
 </div>
 
