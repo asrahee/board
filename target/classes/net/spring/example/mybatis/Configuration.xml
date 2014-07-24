@@ -10,6 +10,7 @@
 		<typeAlias type="net.spring.example.board.vo.Comment" alias="Comment"/>
 		<typeAlias type="net.spring.example.board.vo.Board" alias="Board"/>
 		<typeAlias type="net.spring.example.board.vo.Article" alias="Article"/>
+		<typeAlias type="net.spring.example.board.vo.Reply" alias="Reply"/>
 		<typeAlias type="net.spring.example.user.vo.User" alias="User"/>
 	</typeAliases>
 	

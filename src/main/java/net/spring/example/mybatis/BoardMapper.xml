@@ -241,4 +241,35 @@
 		WHERE articleno = #{articleNo}
 		ORDER BY commentno DESC
 	</select>
+	
+	<!-- 2014.07.24 [[ 답글 기능 추가 -->
+	<insert id="insertReply" parameterType="Reply">
+		INSERT INTO replys (articleno, commentno, email, memo, regdate)
+		<!-- Oracle 용 -->
+<!-- 		VALUES (#{articleNo}, #{email}, #{memo}, sysdate) -->
+		<!-- MariaDB 용 -->
+		VALUES (#{articleNo}, #{commentNo}, #{email}, #{memo}, sysdate())
+	</insert>
+	
+	<update id="updateReply" parameterType="Reply">
+		UPDATE replys SET memo = #{memo} WHERE replyno = #{replyno}
+	</update>
+	
+	<delete id="deleteReply" parameterType="int">
+		DELETE FROM replys WHERE commentno = #{replyno}
+	</delete>
+	
+	<select id="getReply" parameterType="int" resultType="Reply">
+		SELECT articleno,commentno,replyno,email,memo,regdate  
+		FROM replys 
+		WHERE replyno = #{replyNo}
+	</select>
+	
+	<select id="getReplyList" parameterType="int" resultType="Reply">
+		SELECT articleno,commentno,replyno,email, memo, regdate
+		FROM replys
+		WHERE articleno = #{articleNo}
+		ORDER BY replyno DESC
+	</select>
+	<!-- 2014.07.24  답글 기능 추가 ]] -->
 </mapper>    

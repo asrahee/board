@@ -37,6 +37,22 @@
 		}
 	}
 	
+	function updateReply(no) {
+		var formno = "insertReplyForm" + no;
+		var formele = document.getElementById(formno);
+		var formdisplay;
+		if(formele.style.display){
+			formdisplay = '';
+		} else {
+			formdisplay = 'none';
+		}
+		formele.style.display = formdisplay;
+	}
+	
+	function insertReply(no){
+		
+	}
+	
 	function updateComment(no) {
 		var commentno = "comment" + no;
 		var formno = "modifyCommentForm" + no;
@@ -135,12 +151,10 @@
 	<!--  덧글 반복 시작 -->
 	<c:forEach var="comment" items="${commentList }" varStatus="status">	
 	<div class="comments">
-		<h4>${comment.email }</h4>
-		<h5>${comment.regdate }</h5>
-		<h6>
+		<h4>${comment.email } | ${comment.regdate } 	
+			<a href="javascript:updateReply('${comment.commentNo }')">답글</a> |
 			<a href="javascript:updateComment('${comment.commentNo }')">수정</a> |
-			<a href="javascript:deleteComment('${comment.commentNo }')">삭제</a>
-		</h6>
+			<a href="javascript:deleteComment('${comment.commentNo }')">삭제</a></h4>
 
 		<p id="comment${comment.commentNo }">${comment.htmlMemo }</p>
 		<div class="modify-comment">
@@ -161,7 +175,59 @@
 			</div>
 			</form>
 		</div>
+		
+		<div class="insert-reply">
+			<form id="insertReplyForm${comment.commentNo }" action="replyAdd" method="post" style="display: none;">
+			<p>
+				<input type="hidden" name="commentNo" value="${comment.commentNo }" />
+				<input type="hidden" name="boardCd" value="${param.boardCd }" />
+				<input type="hidden" name="articleNo" value="${param.articleNo }" />
+				<input type="hidden" name="curPage" value="${param.curPage }" />
+				<input type="hidden" name="searchWord" value="${param.searchWod }" />
+			</p>
+			<div class="fr">
+					<a href="javascript:document.forms.insertReplyForm${comment.commentNo }.submit()">답글등록</a>
+					| <a href="javascript:updateReply('${comment.commentNo }')">취소</a>
+			</div>
+			<div>
+				<textarea class="insert-reply-ta" name="memo" rows="7" cols="50">답글내용 입력</textarea>
+			</div>
+			</form>
+		</div>
 	</div>
+	
+	 	<!-- 덧글에 대한 답글 반복 시작 --> 
+	<c:forEach var="reply" items="${replyList }" varStatus="status">
+		<c:if test="${reply.commentNo == comment.commentNo}">
+			<div class="replys">
+				<h4>${reply.email } | ${reply.regdate } 
+					<a href="javascript:insertReply('${reply.commentNo }')">답글</a> |
+					<a href="javascript:updateReply('${reply.replyNo}')">수정</a> |
+					<a href="javascript:deleteReply('${reply.replyNo}')">삭제</a></h4>	
+				<p id="reply${reply.replyNo }">${reply.htmlMemo }</p>	
+				<div class="modify-reply">
+					<form id="modifyReplyForm"${reply.replyNo }" action="replyUpdate" method="post" style="display: none;">
+						<p>
+							<input type="hidden" name="commentNo" value="${comment.commentNo }" />
+							<input type="hidden" name="replyNo" value="${reply.replyNo }" />
+							<input type="hidden" name="boardCd" value="${param.boardCd }" />
+							<input type="hidden" name="articleNo" value="${param.articleNo }" />
+							<input type="hidden" name="curPage" value="${param.curPage }" />
+							<input type="hidden" name="searchWord" value="${param.searchWod }" />
+						</p>
+						<div class="fr">
+							<a href="javascript:document.forms.modifyReplyForm${reply.replyNo }.submit()">수정하기</a>
+							| <a href="javascript:updateReply('${reply.replyNo }')">취소</a>
+						</div>
+						<div>
+							<textarea class="modify-reply-ta" name="replymemo" rows="7" cols="50">${reply.memo }</textarea>
+						</div>
+					</form>
+				</div>
+			</div>
+		</c:if>
+	</c:forEach>
+	<!-- 덧글에 대한 답글 반복 끝 -->
 	</c:forEach>
 	<!--  덧글 반복 끝 -->
 	<form id="addCommentForm" action="commentAdd" method="post">

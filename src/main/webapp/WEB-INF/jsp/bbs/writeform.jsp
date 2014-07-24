@@ -56,14 +56,14 @@
 <p style="margin: 0;padding: 0;">
 <input type="hidden" name="boardCd" value="${param.boardCd }" />
 </p>
-<table id="write-form">
+<table id="write-form" >
 <tr>
 	<td>제목</td>
 	<td><input type="text" name="title" size="50" /></td>
 </tr>
 <tr>
-	<td colspan="2">
-		<textarea name="content" rows="17"></textarea>
+	<td colspan="2" >
+		<textarea name="content" rows="17" cols="70"></textarea>
 	</td>
 </tr>
 </table>

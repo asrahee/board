@@ -8,11 +8,14 @@ import net.spring.example.board.vo.Article;
 import net.spring.example.board.vo.AttachFile;
 import net.spring.example.board.vo.Board;
 import net.spring.example.board.vo.Comment;
+import net.spring.example.board.vo.Reply;
 import net.spring.example.commons.PagingHelper;
 import net.spring.example.mybatis.BoardMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BoardServiceImpl implements BoardService {
 	@Autowired 
 	private BoardMapper boardMapper;
@@ -217,5 +220,26 @@ public class BoardServiceImpl implements BoardService {
 
 	public void setPagingHelper(PagingHelper pagingHelper) {
 		this.pagingHelper = pagingHelper;
+	}
+
+	public void insertReply(Reply reply) {
+		boardMapper.insertReply(reply);		
+	}
+
+	public void updateReply(Reply reply) {
+		boardMapper.updateReply(reply);
+	}
+
+	public void deleteReply(int replyNo) {
+		boardMapper.deleteReply(replyNo);
+		
+	}
+
+	public Comment getReply(int replyNo) {
+		return boardMapper.getReply(replyNo);
+	}
+
+	public ArrayList<Reply> getReplyList(int articleNo) {
+		return boardMapper.getReplyList(articleNo);
 	}
 }

@@ -7,6 +7,7 @@ import net.spring.example.board.vo.Article;
 import net.spring.example.board.vo.AttachFile;
 import net.spring.example.board.vo.Board;
 import net.spring.example.board.vo.Comment;
+import net.spring.example.board.vo.Reply;
 
 public interface BoardMapper {
 	/*
@@ -108,5 +109,30 @@ public interface BoardMapper {
 	 * 게시글의 덧글리스트 구하기
 	 */
 	public ArrayList<Comment> getCommentList(int articleNo);
+	
+	/*
+	 * 답글쓰기
+	 */
+	public void insertReply(Reply reply);
+	
+	/*
+	 * 답글수정
+	 */
+	public void updateReply(Reply reply);
+	
+	/*
+	 * 답글삭제
+	 */
+	public void deleteReply(int replyNo);
+	
+	/*
+	 * 답글가져오기
+	 */
+	public Comment getReply(int replyNo);
+	
+	/*
+	 * 덧글의 답글리스트 구하기
+	 */
+	public ArrayList<Reply> getReplyList(int articleNo);
 
 }

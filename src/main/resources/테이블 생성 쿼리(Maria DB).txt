@@ -66,6 +66,17 @@ create table comments (
 	constraint PK_COMMENTS PRIMARY KEY(commentno)
 );
 
+-- 답글(2014.7.24. 추가, 해당 게시물의 덧글에 대한 답글을 한 번에 조회하기 위해 articleno 컬럼을 사용)
+create table replys (
+	replyno int AUTO_INCREMENT,
+	articleno int, 
+	commentno int,
+	email varchar(60),
+	memo varchar(4000),
+	regdate date,
+	constraint PK_REPLYS PRIMARY KEY(replyno)
+);
+
 
 -- 첨부파일 
 create table attachfile (

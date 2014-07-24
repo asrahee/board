@@ -9,6 +9,7 @@ import net.spring.example.board.service.BoardService;
 import net.spring.example.board.vo.Article;
 import net.spring.example.board.vo.AttachFile;
 import net.spring.example.board.vo.Comment;
+import net.spring.example.board.vo.Reply;
 import net.spring.example.commons.FileUploadUtil;
 import net.spring.example.commons.PagingHelper;
 
@@ -126,7 +127,9 @@ public class BbsController {
      */
     @RequestMapping(value="/bbs/modify")
     public String modify(HttpServletRequest request) throws Exception {
+    	// 파일 업로드 utility 의 생성자로 사용할 서비스 객체를 전달
     	FileUploadUtil fuu = new FileUploadUtil(boardService);
+    	// 파일 업로드 utility 의 fileUpload(request) 메소드를 호출하면 결과값을 리다이렉트할 URL 을 리턴
     	return fuu.fileUpload(request);
     }
     
@@ -228,6 +231,7 @@ public class BbsController {
     	Article thisArticle = boardService.getArticle(articleNo);
     	ArrayList<AttachFile> attachFileList = boardService.getAttachFileList(articleNo);
     	ArrayList<Comment> commentList = boardService.getCommentList(articleNo);
+    	ArrayList<Reply> replyList = boardService.getReplyList(articleNo);
     	Article nextArticle = boardService.getNextArticle(articleNo, boardCd, searchWord);
     	Article prevArticle = boardService.getPrevArticle(articleNo, boardCd, searchWord);
     	
@@ -251,6 +255,7 @@ public class BbsController {
         model.addAttribute("thisArticle", thisArticle);
         model.addAttribute("attachFileList", attachFileList);
         model.addAttribute("commentList", commentList);
+        model.addAttribute("replyList", replyList);
         model.addAttribute("nextArticle", nextArticle);
         model.addAttribute("prevArticle", prevArticle);
         
@@ -265,6 +270,32 @@ public class BbsController {
         model.addAttribute("pageLinks", pageLinks);
          
         return "bbs/view";
+    }
+    
+    // 답글쓰기
+    @RequestMapping(value="/bbs/replyAdd")
+    public String replyAdd(
+    		Integer articleNo,
+    		Integer commentNo,
+    		String boardCd,
+    		Integer curPage,
+    		String searchWord,
+    		String memo) throws Exception {
+    	
+    	Reply reply = new Reply();
+    	reply.setMemo(memo);
+    	reply.setEmail("replyer@esumtech.com");
+    	reply.setArticleNo(articleNo);
+    	reply.setCommentNo(commentNo);
+    	boardService.insertReply(reply);
+    	
+    	searchWord = URLEncoder.encode(searchWord, "UTF-8");
+    	
+    	return "redirect:/bbs/view?articleNo=" + articleNo +
+    			"&commentNo=" + commentNo +
+    			"&boardCd=" + boardCd +
+    			"&curPage=" + curPage +
+    			"&searchWord=" + searchWord;
     }
     
     // 덧글쓰기
