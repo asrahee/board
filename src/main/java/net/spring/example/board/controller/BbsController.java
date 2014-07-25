@@ -125,13 +125,17 @@ public class BbsController {
      * @throws Exception
      */
     @RequestMapping(value="/bbs/modify")
-    public String modify(HttpServletRequest request) throws Exception {
+    public String modify(HttpServletRequest request, Model model) throws Exception {
     	// 파일 업로드 utility 의 생성자로 사용할 서비스 객체를 전달
     	FileUploadUtil fuu = new FileUploadUtil(boardService);
     	// 파일 업로드 utility 의 fileUpload(request) 메소드를 호출하면 결과값을 리다이렉트할 URL 을 리턴
-    	return fuu.fileUpload(request);
+    	return fuu.fileUpload(request); 
     }
     
+    @RequestMapping(value="/inc/error-page")
+    public String goErrorPage() throws Exception {
+    	return "inc/error-page";
+    }
     // 글 수정(내용을 수정하고 상세보기 화면으로 이동), commons-fileupload, commons-io 를 사용하는 경우
 //    @RequestMapping(value="/bbs/modify", method=RequestMethod.POST)
 //    public String modify(HttpServletRequest request) throws Exception {

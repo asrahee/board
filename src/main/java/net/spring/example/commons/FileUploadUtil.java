@@ -75,9 +75,8 @@ public class FileUploadUtil {
 					+ "&searchWord=" + searchWord;
 		
     	} catch (Exception e){
-    		e.printStackTrace();
+    		return "redirect:/inc/error-page?error-message=" + e.getMessage();
     	}
-    	return null;
 	}
 	
 	/**

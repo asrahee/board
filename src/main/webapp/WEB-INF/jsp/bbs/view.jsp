@@ -155,7 +155,7 @@
 
 	<div id="container">
 		<div id="content" style="height: 800px; width: 800px; margin:0 auto; ">
-			<div id="url-navi">BBS</div>
+			<div id="url-navi"><a href="./list">BBS</a></div>
 
 <!-- 본문 시작 -->
 <h1>${boardNm }</h1>
@@ -165,7 +165,7 @@
 		<th style="width: 50px;">TITLE</th>
 		<th style="text-align: left;color: #555;">${thisArticle.title }</th>
 		<th style="width: 50px;">DATE</th>
-		<th style="width: 130px;color: #555;">${thisArticle.writeDateTime }</th>
+		<th style="color: #555;">${thisArticle.writeDateTime }</th>
 	</tr>	
 	</table>
 

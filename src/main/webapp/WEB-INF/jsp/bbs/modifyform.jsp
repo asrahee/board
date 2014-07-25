@@ -15,6 +15,8 @@
 	function check() {
 		var form = document.getElementById("modifyForm");
 		//TODO 유효성 검사로직 추가
+		var size = document.getElementById("upload").files[0].size;
+		alert(size);
 		return true;
 	}
 	

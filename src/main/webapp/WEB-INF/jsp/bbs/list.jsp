@@ -52,7 +52,7 @@
 				
 		<div id="container">
 			<div id="content" style="height: 800px; width: 800px; margin:0 auto; ">
-			<div id="url-navi">BBS</div>
+			<div id="url-navi"><a href="./list">BBS</a></div>
 			<!-- 본문 시작 -->
 			<h1>${boardNm }</h1>
 			<div id="bbs">

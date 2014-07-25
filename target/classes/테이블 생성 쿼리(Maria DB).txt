@@ -23,7 +23,7 @@ create table article (
 	content text,
 	email varchar(60),
 	hit int,	
-	regdate date,
+	regdate varchar(20),
 	constraint PK_ARTICLE PRIMARY KEY(articleno),
 	constraint FK_ARTICLE FOREIGN KEY(boardcd) REFERENCES board(boardcd)
 );
@@ -62,7 +62,7 @@ create table comments (
 	articleno int,	
 	email varchar(60),	
 	memo varchar(4000),
-	regdate date, 
+	regdate varcher(20), 
 	constraint PK_COMMENTS PRIMARY KEY(commentno)
 );
 
@@ -73,7 +73,7 @@ create table replys (
 	commentno int,
 	email varchar(60),
 	memo varchar(4000),
-	regdate date,
+	regdate varcher(20),
 	constraint PK_REPLYS PRIMARY KEY(replyno)
 );
 
