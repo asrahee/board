@@ -37,23 +37,16 @@
 		}
 	}
 	
-	function updateReply(no) {
-		var formno = "insertReplyForm" + no;
-		var formele = document.getElementById(formno);
-		var formdisplay;
-		if(formele.style.display){
-			formdisplay = '';
-		} else {
-			formdisplay = 'none';
+	function deleteReply(replyNo) {
+		var chk = confirm("정말로 삭제하시겠습니까?");
+		if (chk==true) {
+			var form = document.getElementById("deleteReplyForm");
+			form.replyNo.value = replyNo;
+			form.submit();
 		}
-		formele.style.display = formdisplay;
 	}
 	
-	function insertReply(no){
-		
-	}
-	
-	function updateComment(no) {
+	function updateCommentFormUpdate(no) {
 		var commentno = "comment" + no;
 		var formno = "modifyCommentForm" + no;
 		var pele = document.getElementById(commentno);
@@ -68,6 +61,46 @@
 			formdisplay = '';
 		}
 		pele.style.display = pdisplay;
+		formele.style.display = formdisplay;
+	}
+	
+	// 덧글에 대한 답글 입력창을 보여준다.
+	// 입력폼명은 insertReplyForm + 덧글 고유번호
+	function insertReplyFormUpdate(no) {
+		var formno = "insertReplyForm" + no;
+		var formele = document.getElementById(formno);
+		var formdisplay;
+		if(formele.style.display){
+			formdisplay = '';
+		} else {
+			formdisplay = 'none';
+		}
+		formele.style.display = formdisplay;
+	}
+	
+	// 덧글의 대한 답글의 답글 입력창을 보여준다.
+	function insertReplyReplyFormUpdate(no) {
+		var formno = "insertReplyReplyForm" + no;
+		var formele = document.getElementById(formno);
+		var formdisplay;
+		if(formele.style.display){
+			formdisplay = '';
+		} else {
+			formdisplay = 'none';
+		}
+		formele.style.display = formdisplay;
+	}
+	
+	// 덧글의 대한 답글의 답글 수정창을 보여준다.
+	function updateReplyFormUpdate(no) {
+		var formno = "modifyReplyForm" + no;
+		var formele = document.getElementById(formno);
+		var formdisplay;
+		if(formele.style.display){
+			formdisplay = '';
+		} else {
+			formdisplay = 'none';
+		}
 		formele.style.display = formdisplay;
 	}
 
@@ -137,7 +170,7 @@
 	</table>
 
 	<div id="gul-content">
-		<h6>작성자 ${thisArticle.email }, 조회수 ${thisArticle.hit }</h6>
+		<h4>작성자 ${thisArticle.email }, 조회수 ${thisArticle.hit }</h4>
 		<p>${thisArticle.htmlContent }</p>
 		<p id="file-list" style="text-align: right;">
 			<c:forEach var="file" items="${attachFileList }" varStatus="status">
@@ -152,8 +185,8 @@
 	<c:forEach var="comment" items="${commentList }" varStatus="status">	
 	<div class="comments">
 		<h4>${comment.email } | ${comment.regdate } 	
-			<a href="javascript:updateReply('${comment.commentNo }')">답글</a> |
-			<a href="javascript:updateComment('${comment.commentNo }')">수정</a> |
+			<a href="javascript:insertReplyFormUpdate('${comment.commentNo }')">답글</a> |
+			<a href="javascript:updateCommentFormUpdate('${comment.commentNo }')">수정</a> |
 			<a href="javascript:deleteComment('${comment.commentNo }')">삭제</a></h4>
 
 		<p id="comment${comment.commentNo }">${comment.htmlMemo }</p>
@@ -168,7 +201,7 @@
 			</p>
 			<div class="fr">
 					<a href="javascript:document.forms.modifyCommentForm${comment.commentNo }.submit()">수정하기</a>
-					| <a href="javascript:updateComment('${comment.commentNo }')">취소</a>
+					| <a href="javascript:updateCommentFormUpdate('${comment.commentNo }')">취소</a>
 			</div>
 			<div>
 				<textarea class="modify-comment-ta" name="memo" rows="7" cols="50">${comment.memo }</textarea>
@@ -187,7 +220,7 @@
 			</p>
 			<div class="fr">
 					<a href="javascript:document.forms.insertReplyForm${comment.commentNo }.submit()">답글등록</a>
-					| <a href="javascript:updateReply('${comment.commentNo }')">취소</a>
+					| <a href="javascript:insertReplyFormUpdate('${comment.commentNo }')">취소</a>
 			</div>
 			<div>
 				<textarea class="insert-reply-ta" name="memo" rows="7" cols="50">답글내용 입력</textarea>
@@ -201,12 +234,34 @@
 		<c:if test="${reply.commentNo == comment.commentNo}">
 			<div class="replys">
 				<h4>${reply.email } | ${reply.regdate } 
-					<a href="javascript:insertReply('${reply.commentNo }')">답글</a> |
-					<a href="javascript:updateReply('${reply.replyNo}')">수정</a> |
-					<a href="javascript:deleteReply('${reply.replyNo}')">삭제</a></h4>	
+					<a href="javascript:insertReplyReplyFormUpdate('${reply.replyNo }')">답글</a> |
+					<a href="javascript:updateReplyFormUpdate('${reply.replyNo }')">수정</a> |
+					<a href="javascript:deleteReply('${reply.replyNo }')">삭제</a></h4>	
 				<p id="reply${reply.replyNo }">${reply.htmlMemo }</p>	
 				<div class="modify-reply">
-					<form id="modifyReplyForm"${reply.replyNo }" action="replyUpdate" method="post" style="display: none;">
+					<!-- 답글에 대한 답글 입력용 폼 시작 -->
+					<form id="insertReplyReplyForm${reply.replyNo }" action="replyAdd" method="post" style="display: none;">
+						<p>
+							<input type="hidden" name="commentNo" value="${comment.commentNo }" />
+							<input type="hidden" name="replyNo" value="${reply.replyNo }" />
+							<input type="hidden" name="boardCd" value="${param.boardCd }" />
+							<input type="hidden" name="articleNo" value="${param.articleNo }" />
+							<input type="hidden" name="curPage" value="${param.curPage }" />
+							<input type="hidden" name="searchWord" value="${param.searchWod }" />
+						</p>
+						<div class="fr">
+							<a href="javascript:document.forms.insertReplyReplyForm${reply.replyNo }.submit()">등록하기</a>
+							| <a href="javascript:insertReplyReplyFormUpdate('${reply.replyNo }')">취소</a>
+						</div>
+						<div>
+							<textarea class="modify-reply-ta" name="memo" rows="7" cols="50">답글의 답글 입력</textarea>
+						</div>
+					</form>
+					<!-- 답글에 대한 답글 입력용 폼 끝 -->
+				</div>
+				<div class="modify-reply">
+					<!-- 답글에 대한 답글 수정용 폼 시작 -->
+					<form id="modifyReplyForm${reply.replyNo }" action="replyUpdate" method="post" style="display: none;">
 						<p>
 							<input type="hidden" name="commentNo" value="${comment.commentNo }" />
 							<input type="hidden" name="replyNo" value="${reply.replyNo }" />
@@ -217,12 +272,13 @@
 						</p>
 						<div class="fr">
 							<a href="javascript:document.forms.modifyReplyForm${reply.replyNo }.submit()">수정하기</a>
-							| <a href="javascript:updateReply('${reply.replyNo }')">취소</a>
+							| <a href="javascript:updateReplyFormUpdate('${reply.replyNo }')">취소</a>
 						</div>
 						<div>
-							<textarea class="modify-reply-ta" name="replymemo" rows="7" cols="50">${reply.memo }</textarea>
+							<textarea class="modify-reply-ta" name="memo" rows="7" cols="50">${reply.memo } </textarea>
 						</div>
 					</form>
+					<!-- 답글에 대한 답글 수정용 폼 끝 -->
 				</div>
 			</div>
 		</c:if>
@@ -414,6 +470,15 @@
 	<form id="deleteCommentForm" action="commentDel" method="post">
 		<p>
 			<input type="hidden" name="commentNo" />
+			<input type="hidden" name="articleNo" value="${param.articleNo }" />
+			<input type="hidden" name="boardCd" value="${param.boardCd }" />
+			<input type="hidden" name="curPage" value="${param.curPage }" />
+			<input type="hidden" name="searchWord" value="${param.searchWord }" />
+		</p>
+	</form>	
+	<form id="deleteReplyForm" action="replyDel" method="post">
+		<p>
+			<input type="hidden" name="replyNo" />
 			<input type="hidden" name="articleNo" value="${param.articleNo }" />
 			<input type="hidden" name="boardCd" value="${param.boardCd }" />
 			<input type="hidden" name="curPage" value="${param.curPage }" />

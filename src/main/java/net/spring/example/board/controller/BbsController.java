@@ -2,6 +2,7 @@ package net.spring.example.board.controller;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -111,11 +112,9 @@ public class BbsController {
     		Model model) throws Exception {
     	Article thisArticle = boardService.getArticle(articleNo);
     	String boardNm = boardService.getBoardNm(boardCd);
-    	
     	// 수정페이지에서 보일 게시글 정보
     	model.addAttribute("thisArticle", thisArticle);
     	model.addAttribute("boardNm",  boardNm);
-    	
     	return "bbs/modifyform";
     }
     
@@ -199,10 +198,13 @@ public class BbsController {
     		String boardCd,
     		Integer curPage,
     		String searchWord) throws Exception {
-    	
     	boardService.delete(articleNo);
+    	List<Comment> comments = new ArrayList<Comment>();
+    	for(Comment comment : comments){
+    		boardService.deleteComment(comment.getCommentNo());					// 게시글에 엮인 덧글 삭제
+    		boardService.deleteCommentReplys(comment.getCommentNo());			// 덧글에 엮인 답글 삭제
+    	}
     	searchWord = URLEncoder.encode(searchWord, "UTF-8");
-    	
     	return "redirect:/bbs/list?boardCd=" + boardCd +
     			"&curPage=" + curPage +
     			"&searchWord=" + searchWord;
@@ -272,7 +274,7 @@ public class BbsController {
         return "bbs/view";
     }
     
-    // 답글쓰기
+    // 답글 쓰기
     @RequestMapping(value="/bbs/replyAdd")
     public String replyAdd(
     		Integer articleNo,
@@ -281,16 +283,38 @@ public class BbsController {
     		Integer curPage,
     		String searchWord,
     		String memo) throws Exception {
-    	
     	Reply reply = new Reply();
     	reply.setMemo(memo);
     	reply.setEmail("replyer@esumtech.com");
     	reply.setArticleNo(articleNo);
     	reply.setCommentNo(commentNo);
     	boardService.insertReply(reply);
-    	
     	searchWord = URLEncoder.encode(searchWord, "UTF-8");
-    	
+    	return "redirect:/bbs/view?articleNo=" + articleNo +
+    			"&commentNo=" + commentNo +
+    			"&boardCd=" + boardCd +
+    			"&curPage=" + curPage +
+    			"&searchWord=" + searchWord;
+    }
+    
+    // 답글 수정
+    @RequestMapping(value="/bbs/replyUpdate")
+    public String replyUpdate(
+    		Integer articleNo,
+    		Integer commentNo,
+    		Integer replyNo,
+    		String boardCd,
+    		Integer curPage,
+    		String searchWord,
+    		String memo) throws Exception {
+    	Reply reply = new Reply();
+    	reply.setMemo(memo);
+    	reply.setEmail("replyer@esumtech.com");
+    	reply.setArticleNo(articleNo);
+    	reply.setCommentNo(commentNo);
+    	reply.setReplyNo(replyNo);
+    	boardService.updateReply(reply);
+    	searchWord = URLEncoder.encode(searchWord, "UTF-8");
     	return "redirect:/bbs/view?articleNo=" + articleNo +
     			"&commentNo=" + commentNo +
     			"&boardCd=" + boardCd +
@@ -306,15 +330,12 @@ public class BbsController {
     		Integer curPage,
     		String searchWord,
     		String memo) throws Exception {
-    	
     	Comment comment = new Comment();
     	comment.setMemo(memo);
     	comment.setEmail("yjson@esumtech.com");
     	comment.setArticleNo(articleNo);
     	boardService.insertComment(comment);
-    	
     	searchWord = URLEncoder.encode(searchWord, "UTF-8");
-    	
     	return "redirect:/bbs/view?articleNo=" + articleNo + 
     			"&boardCd=" + boardCd +
     			"&curPage=" + curPage +
@@ -330,12 +351,10 @@ public class BbsController {
     		Integer curPage,
     		String searchWord,
     		String memo) throws Exception{
-    	
     	Comment comment = boardService.getComment(commentNo);
     	comment.setMemo(memo);
     	boardService.updateComment(comment);
     	searchWord = URLEncoder.encode(searchWord, "UTF-8");
-    	
     	return "redirect:/bbs/view?articleNo=" + articleNo +
     			"&boardCd=" + boardCd +
     			"&curPage=" + curPage + 
@@ -350,8 +369,24 @@ public class BbsController {
     		Integer curPage,
     		String searchWord) throws Exception {
     	boardService.deleteComment(commentNo);
+    	boardService.deleteCommentReplys(commentNo);			// 덧글에 엮인 답글 삭제
     	searchWord = URLEncoder.encode(searchWord, "UTF-8");
-    	
+    	return "redirect:/bbs/view?articleNo=" + articleNo +
+    			"&boardCd=" + boardCd + 
+    			"&curPage=" + curPage +
+    			"&searchWord=" + searchWord;
+    }
+    
+    // 답글 삭제
+    @RequestMapping(value="/bbs/replyDel")
+    public String replyDel(Integer commentNo,
+    		Integer articleNo,
+    		Integer replyNo, 
+    		String boardCd,
+    		Integer curPage,
+    		String searchWord) throws Exception {
+    	boardService.deleteReply(replyNo);
+    	searchWord = URLEncoder.encode(searchWord, "UTF-8");
     	return "redirect:/bbs/view?articleNo=" + articleNo +
     			"&boardCd=" + boardCd + 
     			"&curPage=" + curPage +
@@ -374,14 +409,11 @@ public class BbsController {
     		Integer curPage,
     		String searchWord,
     		Model model) throws Exception {
-    	
     	boardService.deleteFile(attachFileNo);
     	searchWord = URLEncoder.encode(searchWord, "UTF-8");
-    	
     	return "redirect:/bbs/view?articleNo=" + articleNo +
     			"&boardCd=" + boardCd +
     			"&curPage=" + curPage +
     			"&searchWord=" + searchWord;
     }
-    		
 }

@@ -176,6 +176,9 @@ public class BoardServiceImpl implements BoardService {
 		boardMapper.deleteComment(commentNo);
 	}
 	
+	public void deleteCommentReplys(int commentNo) {
+		boardMapper.deleteCommentReplys(commentNo);
+	}
 	/*
 	 * 덧글가져오기
 	 */

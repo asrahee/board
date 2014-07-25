@@ -100,6 +100,9 @@ public interface BoardMapper {
 	 */
 	public void deleteComment(int commentNo);
 	
+	// 덧글에 엮인 답글 삭제
+	public void deleteCommentReplys(int commentNo);
+	
 	/*
 	 * 덧글 가져오기
 	 */

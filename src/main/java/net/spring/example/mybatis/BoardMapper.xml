@@ -222,11 +222,15 @@
 	</insert>
 	
 	<update id="updateComment" parameterType="Comment">
-		UPDATE comments SET memo = #{memo} WHERE commentno = #{commentNo}
+		UPDATE comments SET memo = #{memo}, regdate = sysdate() WHERE commentno = #{commentNo}
 	</update>
 	
 	<delete id="deleteComment" parameterType="int">
 		DELETE FROM comments WHERE commentno = #{commentNo}
+	</delete>
+	
+	<delete id="deleteCommentReplys" parameterType="int">
+		DELETE FROM replys WHERE commentno = #{commentNo}
 	</delete>
 	
 	<select id="getComment" parameterType="int" resultType="Comment">
@@ -239,7 +243,7 @@
 		SELECT commentno, articleno, email, memo, regdate
 		FROM comments
 		WHERE articleno = #{articleNo}
-		ORDER BY commentno DESC
+		ORDER BY commentno 
 	</select>
 	
 	<!-- 2014.07.24 [[ 답글 기능 추가 -->
@@ -252,11 +256,12 @@
 	</insert>
 	
 	<update id="updateReply" parameterType="Reply">
-		UPDATE replys SET memo = #{memo} WHERE replyno = #{replyno}
+		UPDATE replys SET memo = #{memo},regdate = sysdate() WHERE replyno = #{replyNo}
 	</update>
 	
+	<!-- 답글 삭제 -->
 	<delete id="deleteReply" parameterType="int">
-		DELETE FROM replys WHERE commentno = #{replyno}
+		DELETE FROM replys WHERE replyno = #{replyNo}
 	</delete>
 	
 	<select id="getReply" parameterType="int" resultType="Reply">
@@ -269,7 +274,7 @@
 		SELECT articleno,commentno,replyno,email, memo, regdate
 		FROM replys
 		WHERE articleno = #{articleNo}
-		ORDER BY replyno DESC
+		ORDER BY replyno 
 	</select>
 	<!-- 2014.07.24  답글 기능 추가 ]] -->
 </mapper>    
