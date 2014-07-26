@@ -73,7 +73,7 @@ create table replys (
 	commentno int,
 	email varchar(60),
 	memo varchar(4000),
-	regdate varcher(20),
+	regdate varchar(20),
 	constraint PK_REPLYS PRIMARY KEY(replyno)
 );
 
